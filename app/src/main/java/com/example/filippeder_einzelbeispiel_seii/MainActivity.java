@@ -3,18 +3,14 @@ package com.example.filippeder_einzelbeispiel_seii;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-
 public class MainActivity extends AppCompatActivity {
-    private Button button;
+    private MyThread thread;
     private TextView answer;
-    private int port = 20080;
+    private EditText numberInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,22 +18,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         answer = findViewById(R.id.ServerAnswer);
+        numberInput = findViewById(R.id.NumberInput);
 
-        button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                connect();
+        Button button = findViewById(R.id.button);
+        button.setOnClickListener(v -> {
+            if(!numberInput.getText().toString().equals("")) {
+                int matrikelNumber = Integer.parseInt(numberInput.getText().toString());
+                thread = new MyThread(matrikelNumber);
+                thread.start();
+            } else{
+                answer.setText("Can't send a request without Matrikelnummer.");
             }
         });
-    }
-
-    public void connect(){
-        try{
-            ServerSocket socket = new ServerSocket(port);
-
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 }
