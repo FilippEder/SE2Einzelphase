@@ -6,15 +6,18 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 public class MyThread extends Thread {
 
-    private final int port = 20080;
-    private final int mtrklNumber;
+    private final int port = Constants.PORT;
+    private final String address = Constants.ADDRESS;
+    private final String mtrklNumber;
     private final TextView output;
     private final Handler handler;
 
@@ -23,7 +26,7 @@ public class MyThread extends Thread {
     handler - Handler that handles updating the UI after the thread is done
     output - Text View where the server answer is written
      */
-    public MyThread(int mtrklNumber, Handler handler, TextView output){
+    public MyThread(String mtrklNumber, Handler handler, TextView output){
         this.mtrklNumber = mtrklNumber;
         this.handler = handler;
         this.output = output;
@@ -36,19 +39,31 @@ public class MyThread extends Thread {
             Log.e("MyTag","Thread has not reached the server");
             handler.post(()-> output.setText("Connection to server failed"));
         } else {
-            handler.post(() -> output.setText("Answer from Server: " + result));
+            handler.post(() -> output.setText(result));
         }
     }
 
-    public int connect(int mtrklNumber){
+    public String connect(String mtrklNumber){
         Log.d("MyTag","Connection starting...");
-        int response = -1;
+        String response = "-1";
         try{
 
-            Socket socket = new Socket("se2-submission.aau.at",port);
+            Socket socket = new Socket(address,port); // address = se2-submission.aau.at; port = 20080;
+            socket.setSoTimeout(20000); //20 seconds
 
+            Log.d("MyTag","Sending Request:"+mtrklNumber+" to "+address+":"+port);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            out.write(mtrklNumber);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            out.write(mtrklNumber+'\n');
+            out.flush();
+
+            Log.d("MyTag","Waiting for answer...");
+
+            response = in.readLine();
+            Log.d("MyTag","Response:"+response);
+            Log.d("MyTag","MyThread is done");
+
             socket.close();
             Log.d("MyTag","Connection closed");
         }catch (IOException e){

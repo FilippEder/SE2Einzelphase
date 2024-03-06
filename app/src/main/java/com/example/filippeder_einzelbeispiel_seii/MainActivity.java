@@ -22,17 +22,22 @@ public class MainActivity extends AppCompatActivity {
         answer = findViewById(R.id.ServerAnswer);
         numberInput = findViewById(R.id.NumberInput);
 
-
         Button button = findViewById(R.id.button);
         button.setOnClickListener(v -> {
             if(!numberInput.getText().toString().equals("")) {
-                int matrikelNumber = Integer.parseInt(numberInput.getText().toString());
+                String matrikelNumber = numberInput.getText().toString();
                 handler = new Handler();
                 thread = new MyThread(matrikelNumber,handler,answer);
                 thread.start();
             } else{
                 answer.setText("Can't send a request without Matrikelnummer.");
             }
+        });
+
+        Button calculateButton = findViewById(R.id.button2);
+        calculateButton.setOnClickListener(v -> {
+            String matrikelNumber = numberInput.getText().toString();
+
         });
     }
 }
