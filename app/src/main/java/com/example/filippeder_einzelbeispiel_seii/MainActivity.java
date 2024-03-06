@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         answer = findViewById(R.id.ServerAnswer);
         numberInput = findViewById(R.id.NumberInput);
 
+        //Aufgabe 2.1
         Button button = findViewById(R.id.button);
         button.setOnClickListener(v -> {
             if(!numberInput.getText().toString().equals("")) {
@@ -34,10 +35,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Aufgabe 2.2
         Button calculateButton = findViewById(R.id.button2);
         calculateButton.setOnClickListener(v -> {
             String matrikelNumber = numberInput.getText().toString();
-
+            StringBuilder result = new StringBuilder();
+            result.append("Prime numbers: ");
+            for(int i = 1;i<=matrikelNumber.length();i++){
+                String digit = matrikelNumber.substring(i-1,i);
+                if(digit.matches("[12357]")) {
+                    result.append(digit);
+                    result.append(",");
+                }
+            }
+            answer.setText(result.toString());
         });
     }
 }
